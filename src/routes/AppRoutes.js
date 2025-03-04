@@ -1,17 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
+import { Routes, Route } from "react-router-dom";
 import AddStudentForm from "../pages/AddStudentForm"; 
 import ManageStudents from "../pages/ManageStudents";
+import EditStudent from "../pages/EditStudent";
 
 const AppRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/students" element={<ManageStudents />} />
-        <Route path="/add-student" element={<AddStudentForm />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/students" element={<ManageStudents />} />
+      <Route path="/add-student" element={<AddStudentForm />} />
+      <Route path="/edit-student/:id" element={<EditStudent />} />
+    </Routes>
   );
 };
 

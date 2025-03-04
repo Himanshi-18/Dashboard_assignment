@@ -1,12 +1,9 @@
-import './App.css';
-import AppRoutes from "./routes/AppRoutes";
+import "./App.css";
+import Layout from "./layout/Layout";
 
-function App() {
-  return (
-   <>
-    <AppRoutes />
-   </>
-  );
-}
+const App = () => {
+  return <Layout />;
+};
 
 export default App;
+

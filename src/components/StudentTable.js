@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaBook, FaEdit, FaTrash } from "react-icons/fa";
 
 const StudentTable = () => {
   const [students, setStudents] = useState([]);
@@ -11,71 +12,103 @@ const StudentTable = () => {
   }, []);
 
   const fetchStudents = async () => {
-    const response = await axios.get("http://localhost:5000/students");
-    setStudents(response.data);
+    try {
+      const response = await axios.get("http://localhost:5000/students");
+      setStudents(response.data);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/students/${id}`);
-    fetchStudents();
+    try {
+      await axios.delete(`http://localhost:5000/students/${id}`);
+      fetchStudents(); // Refresh the list
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
   };
 
   return (
-    <div className="p-5">
+    <div>
+      {/* Header */}
       <div className="flex justify-between items-center mb-5">
-        <h2 className="text-2xl font-bold">Students</h2>
+        <div className="flex items-center space-x-2">
+          <FaBook className="text-3xl text-orange-600" />
+          <h2 className="text-3xl font-bold text-gray-700">Students</h2>
+        </div>
         <button
           onClick={() => navigate("/add-student")}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition"
         >
           Add Student
         </button>
       </div>
 
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="">Image</th>
-            <th className="">First Name</th>
-            <th className="">Last Name</th>
-            <th className="">Student ID</th>
-            <th className="">Email</th>
-            <th className="">Address</th>
-            <th className="">Subjects</th>
-            <th className="">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => (
-            <tr key={student.id} className="border-b">
-              <td>
-                <img
-                  src={student.image}
-                  alt="Profile"
-                  className="w-12 h-12 rounded-full"
-                />
-              </td>
-              <td>{student.firstName}</td>
-              <td>{student.lastName}</td>
-              <td>{student.studentId}</td>
-              <td>{student.email}</td>
-              <td>{student.address}</td>
-              <td>{student.subjects.join(", ")}</td>
-              <td>
-                <button
-                  onClick={() => handleDelete(student.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded mr-2"
-                >
-                  🗑️
-                </button>
-                <button className="bg-green-500 text-white px-2 py-1 rounded">
-                  ✏️
-                </button>
-              </td>
+      {/* Table Wrapper for Scrollable Content */}
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="w-full table-fixed border-collapse">
+          {/* Table Head */}
+          <thead>
+            <tr className="bg-gray-800 text-white h-12">
+              <th className="px-4 py-3 text-left w-20">Image</th>
+              <th className="px-4 py-3 text-left w-28">First Name</th>
+              <th className="px-4 py-3 text-left w-28">Last Name</th>
+              <th className="px-4 py-3 text-left w-36">Student ID</th>
+              <th className="px-4 py-3 text-left w-52">Email</th>
+              <th className="px-4 py-3 text-left w-52">Address</th>
+              <th className="px-4 py-3 text-left w-60">Subjects</th>
+              <th className="px-4 py-3 text-left w-24">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          {/* Table Body */}
+          <tbody>
+            {students.map((student) => (
+              <tr key={student.id} className="border-b h-16 hover:bg-gray-100">
+                <td className="px-4 py-3">
+                  <img
+                    src={student.image}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                </td>
+                <td className="px-4 py-3">{student.firstName}</td>
+                <td className="px-4 py-3">{student.lastName}</td>
+                <td className="px-4 py-3 font-semibold text-gray-700">
+                  {student.studentId}
+                </td>
+                <td className="px-4 py-3 max-w-xs truncate overflow-hidden whitespace-nowrap">
+                  {student.email}
+                </td>
+                <td className="px-4 py-3 max-w-xs truncate overflow-hidden whitespace-nowrap">
+                  {student.address}
+                </td>
+                <td className="px-4 py-3 max-w-xs truncate overflow-hidden whitespace-nowrap">
+                  {student.subjects.join(", ")}
+                </td>
+                <td className="px-4 py-3 flex justify-between items-center">
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDelete(student.id)}
+                    className="hover:bg-red-600 p-2 rounded-md transition"
+                  >
+                    <FaTrash className="text-xl text-red-600" />
+                  </button>
+
+                  {/* Edit Button */}
+                  <button
+                    onClick={() => navigate(`/edit-student/${student.id}`)}
+                    className="hover:bg-green-600 p-2 rounded-md transition"
+                  >
+                    <FaEdit className="text-xl text-green-600" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
