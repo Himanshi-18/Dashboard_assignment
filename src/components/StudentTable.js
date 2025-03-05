@@ -91,17 +91,17 @@ const StudentTable = () => {
                   {/* Delete Button */}
                   <button
                     onClick={() => handleDelete(student.id)}
-                    className="hover:bg-red-600 p-2 rounded-md transition"
+                    className="hover:bg-red-600 text-red-600 hover:text-white p-2 rounded-md transition"
                   >
-                    <FaTrash className="text-xl text-red-600" />
+                    <FaTrash className="text-xl" />
                   </button>
 
                   {/* Edit Button */}
                   <button
                     onClick={() => navigate(`/edit-student/${student.id}`)}
-                    className="hover:bg-green-600 p-2 rounded-md transition"
+                    className="hover:bg-green-600 text-green-600 hover:text-white p-2 rounded-md transition"
                   >
-                    <FaEdit className="text-xl text-green-600" />
+                    <FaEdit className="text-xl" />
                   </button>
                 </td>
               </tr>

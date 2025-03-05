@@ -8,6 +8,7 @@ import * as Yup from "yup";
 const EditStudentForm = () => {
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [student, setStudent] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
   const Navigate = useNavigate();
   const { id } = useParams(); // Get student ID from URL
 
@@ -192,61 +193,65 @@ const EditStudentForm = () => {
 
               {/* Media */}
               <div className="col-span-full">
-                <label
-                  htmlFor="image"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Media
+                <label className="block text-sm font-medium text-gray-900">
+                  Student's Photo
                 </label>
                 <div className="border border-gray-300 mt-2 p-6 text-gray-600 rounded-sm">
-                  <label className="block font-normal text-base">
-                    Student's Photo
-                  </label>
-                  <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                    <div className="text-center">
-                      <svg
-                        className="mx-auto size-12 text-gray-300"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        aria-hidden="true"
-                        data-slot="icon"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      <div class="mt-4 flex text-sm/6 text-gray-600">
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            name="image"
-                            type="file"
-                            className="sr-only"
-                            onChange={(event) => {
-                              setFieldValue(
-                                "image",
-                                event.currentTarget.files[0]
-                              );
-                            }}
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                      <p className="text-xs/5 text-gray-600">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                      <ErrorMessage
-                        name="image"
-                        component="div"
-                        className="text-red-500 text-sm mt-1"
+                  {/* Show Existing Image Only if No New Image is Uploaded */}
+                  {!previewImage && student.image && (
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-700">Current Image:</p>
+                      <img
+                        src={student.image}
+                        alt="Student"
+                        className="w-40 h-40 object-cover rounded-md border"
                       />
                     </div>
-                  </div>
+                  )}
+
+                  {/* Show Uploaded Image */}
+                  {previewImage && (
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-700">
+                        New Image Preview:
+                      </p>
+                      <img
+                        src={previewImage}
+                        alt="New Student"
+                        className="w-40 h-40 object-cover rounded-md border"
+                      />
+                    </div>
+                  )}
+
+                  <label
+                    htmlFor="file-upload"
+                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500"
+                  >
+                    <span>Upload a new file</span>
+                    <input
+                      id="file-upload"
+                      name="image"
+                      type="file"
+                      className="sr-only"
+                      onChange={(event) => {
+                        const file = event.currentTarget.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            setFieldValue("image", reader.result);
+                            setPreviewImage(reader.result); // Show new image, hide old one
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+
+                  <ErrorMessage
+                    name="image"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
                 </div>
               </div>
 

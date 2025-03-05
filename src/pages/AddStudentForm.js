@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+
 
 const AddStudentForm = () => {
   const [subjectOptions, setSubjectOptions] = useState([]);
@@ -228,10 +227,14 @@ const AddStudentForm = () => {
                           type="file"
                           className="sr-only"
                           onChange={(event) => {
-                            setFieldValue(
-                              "image",
-                              event.currentTarget.files[0]
-                            );
+                            const file = event.currentTarget.files[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.readAsDataURL(file);
+                              reader.onload = () => {
+                                setFieldValue("image", reader.result); // Set Base64 string
+                              };
+                            }
                           }}
                         />
                       </label>
